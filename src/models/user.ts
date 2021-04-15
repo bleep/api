@@ -37,6 +37,7 @@ export const UserSchema = new Schema<UserDocument, UserModel>({
   password: {
     type: String,
     required: "Password is required.",
+    select: false,
   },
 });
 

@@ -8,7 +8,7 @@ const router = new Router();
 router.post("/", async (ctx, next) => {
   const { email, password } = ctx.request.body;
 
-  const user = await UserModel.findOne({ email: email });
+  const user = await UserModel.findOne({ email: email }).select("password");
 
   if (user === null) {
     ctx.throw(400, new Error("User not found."));
