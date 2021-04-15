@@ -1,31 +1,37 @@
+import { compare } from "bcrypt";
 import Router from "koa-router";
-import { createToken } from "../../handlers/tokens";
+import UserModel from "../../models/user";
+import { sign } from "jsonwebtoken";
 
 const router = new Router();
 
-export type CreateTokenRequestParameters = {
-  email: string | undefined;
-  password: string | undefined;
-};
+router.post("/", async (ctx, next) => {
+  const { email, password } = ctx.request.body;
 
-router.post("/", (ctx, next) => {
-  try {
-    const { email, password }: CreateTokenRequestParameters = ctx.request.body;
+  const user = await UserModel.findOne({ email: email });
 
-    if (email === undefined) {
-      ctx.throw(400, new Error("Email is required."));
-      return;
+  if (user === null) {
+    ctx.throw(400, new Error("User not found."));
+    return;
+  }
+
+  const match = await compare(password, user.password);
+
+  if (match) {
+    if (process.env.JWT_SECRET === undefined) {
+      ctx.throw();
+      throw new Error("Required environement variable JWT_SECRET not found.");
     }
-    if (password === undefined) {
-      ctx.throw(400, new Error("Password is required."));
-      return;
-    }
 
-    createToken(email, password);
-  } catch (e) {
-    ctx.throw(e);
-    console.error(e);
+    console.log(user);
+
+    ctx.body = sign(
+      { _id: user._id, email: user.email, name: user.name },
+      process.env.JWT_SECRET
+    );
   }
 
   next();
 });
+
+export default router;
