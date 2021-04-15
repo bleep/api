@@ -17,6 +17,16 @@ const init = async () => {
 
   const app = new Koa();
 
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (e) {
+      ctx.body = { message: e.message };
+      ctx.status = e.status || 500;
+      console.error(e);
+    }
+  });
+
   app.use(router.routes());
   app.listen(3000);
 

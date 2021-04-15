@@ -23,12 +23,13 @@ router.post("/", async (ctx, next) => {
       throw new Error("Required environement variable JWT_SECRET not found.");
     }
 
-    console.log(user);
-
     ctx.body = sign(
       { _id: user._id, email: user.email, name: user.name },
       process.env.JWT_SECRET
     );
+  } else {
+    ctx.throw(400, new Error("Invalid password."));
+    return;
   }
 
   next();
