@@ -4,6 +4,7 @@ import User from "../../models/user";
 const router = new Router();
 
 router.post("/", async (ctx, next) => {
+  // TODO: Verify email before allowing login.
   const {
     name: { first, last },
     email,
@@ -17,6 +18,7 @@ router.post("/", async (ctx, next) => {
   });
 
   try {
+    ctx.status = 201;
     ctx.body = await user.save();
   } catch (e) {
     ctx.throw(400, e);

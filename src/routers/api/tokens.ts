@@ -6,6 +6,7 @@ import { sign } from "jsonwebtoken";
 const router = new Router();
 
 router.post("/", async (ctx, next) => {
+  // TODO: Check that user email is verified before issuing token.
   const { email, password } = ctx.request.body;
 
   const user = await UserModel.findOne({ email: email }).select("password");
@@ -23,6 +24,7 @@ router.post("/", async (ctx, next) => {
       throw new Error("Required environement variable JWT_SECRET not found.");
     }
 
+    ctx.status = 201;
     ctx.body = sign(
       { _id: user._id, email: user.email, name: user.name },
       process.env.JWT_SECRET
