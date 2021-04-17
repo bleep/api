@@ -18,8 +18,8 @@ router.post("/", async (ctx, next) => {
   });
 
   try {
+    await user.save();
     ctx.status = 201;
-    ctx.body = await user.save();
   } catch (e) {
     ctx.throw(400, e);
     return;

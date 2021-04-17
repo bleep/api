@@ -1,63 +1,65 @@
 import Router from "koa-router";
-import UserModel from "../../models/user";
+import User from "../../models/user";
+import Team from "../../models/team";
 
 const router = new Router();
 
-router.get("/", async (ctx, next) => {
+router.get("/", async (ctx) => {
   try {
-    const user = await UserModel.findById(ctx.state.user._id);
+    const account = await User.findById(ctx.state.user._id);
 
-    if (user === null) {
-      ctx.throw(400, new Error("User not found."));
+    if (account === null) {
+      ctx.status = 404;
+      return;
     }
 
-    ctx.body = user;
+    ctx.body = account;
   } catch (e) {
     ctx.throw(400, e);
   }
-
-  next();
 });
 
-router.delete("/", async (ctx, next) => {
+router.delete("/", async (ctx) => {
   try {
-    // TODO Block deletion if user is owner of any team.
-    const deletedUser = await UserModel.findByIdAndDelete(ctx.state.user._id);
+    const deletedUser = await User.findByIdAndDelete(ctx.state.user._id);
 
     if (deletedUser === null) {
-      ctx.throw(400, new Error("User not found."));
+      ctx.status = 404;
+      return;
+    }
+
+    const teamsUserOwns = await Team.find({ owner: ctx.state.user._id });
+
+    if (teamsUserOwns.length > 0) {
+      ctx.throw(403, new Error("User owns teams."));
+      return;
     }
 
     ctx.body = deletedUser;
   } catch (e) {
     ctx.throw(400, e);
   }
-
-  next();
 });
 
-router.patch("/", async (ctx, next) => {
+router.patch("/", async (ctx) => {
   const { name, password, email } = ctx.request.body;
 
-  const user = await UserModel.findById(ctx.state.user._id);
-
-  if (user === null) {
-    ctx.throw(400, new Error("User not found."));
+  const account = await User.findById(ctx.state.user._id);
+  if (account === null) {
+    ctx.status = 404;
     return;
   }
 
-  if (name !== undefined) user.name = { first: name.first, last: name.last };
-  if (email !== undefined) user.email = email;
-  if (password !== undefined) user.password = password;
+  if (name) account.name = name;
+  if (email) account.email = email;
+  if (password) account.password = password;
 
   try {
-    const updatedUser = await user.save();
+    const updatedUser = await account.save();
     ctx.body = updatedUser;
   } catch (e) {
     ctx.throw(400, e);
   }
-
-  next();
 });
 
 export default router;

@@ -1,4 +1,4 @@
-import { genSalt, hash } from "bcrypt";
+import { hash } from "bcrypt";
 import { Model } from "mongoose";
 import { Document, Schema, model } from "mongoose";
 import validator from "validator";
@@ -14,7 +14,7 @@ export interface User {
 
 export interface UserDocument extends User, Document {}
 
-export interface UserModel extends Model<UserDocument> {}
+export type UserModel = Model<UserDocument>;
 
 export const UserSchema = new Schema<UserDocument, UserModel>({
   name: {
@@ -41,11 +41,9 @@ export const UserSchema = new Schema<UserDocument, UserModel>({
   },
 });
 
-UserSchema.pre<UserDocument>("save", async function (next: Function) {
+UserSchema.pre<UserDocument>("save", async function (next) {
   this.password = await hash(this.password, 10);
   next();
 });
 
-const UserModel = model("User", UserSchema);
-
-export default UserModel;
+export default model("User", UserSchema);
