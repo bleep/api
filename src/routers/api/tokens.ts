@@ -1,8 +1,8 @@
 import Router from "koa-router";
-import { createToken } from "../../controllers/tokens";
+import { postToken } from "../../controllers/tokens";
 
 const router = new Router();
 
-router.post("/", createToken);
+router.post("/", postToken);
 
 export default router;

@@ -1,22 +1,11 @@
 import { Context } from "koa";
-import User from "../models/user";
+import { createUser } from "../services/users";
 
-export const createUser = async (ctx: Context): Promise<void> => {
-  // TODO: Verify email before allowing login.
-  const {
-    name: { first, last },
-    email,
-    password,
-  } = ctx.request.body;
-
-  const user = new User({
-    name: { first, last },
-    email,
-    password,
-  });
+export const postUser = async (ctx: Context): Promise<void> => {
+  const { name, email, password } = ctx.request.body;
 
   try {
-    await user.save();
+    await createUser(name, email, password);
     ctx.status = 201;
   } catch (e) {
     ctx.throw(400, e);
