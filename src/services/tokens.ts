@@ -6,7 +6,6 @@ export const createToken = async (
   email: string,
   password: string
 ): Promise<string> => {
-  // TODO: Check that user email is verified before issuing token.
   const user = await retrieveUserWithPasswordFromEmail(email);
   const match = await compare(password, user.password);
 

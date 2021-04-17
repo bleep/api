@@ -1,9 +1,5 @@
 import Team, { TeamDocument } from "../models/team";
 
-export interface UserExposedProperties = {
-
-}
-
 export const removeTeamsUserOwns = async (
   userId: string
 ): Promise<TeamDocument[]> => {
@@ -33,12 +29,13 @@ export const retrieveTeam = async (id: string): Promise<TeamDocument> => {
   return team;
 };
 
-export const createTeam = async(properties: {name: string, owner: string}): Promise<TeamDocument> => {
-
+export const createTeam = async (properties: {
+  name: string;
+  owner: string;
+}): Promise<TeamDocument> => {
   const team = new Team({ name: properties.name, owner: properties.owner });
 
-  return await team.save()
-
+  return await team.save();
 };
 
 export const removeTeam = async (id: string): Promise<TeamDocument> => {
@@ -49,4 +46,25 @@ export const removeTeam = async (id: string): Promise<TeamDocument> => {
   }
 
   return removedTeam;
+};
+
+export const updateTeam = async (
+  id: string,
+  updates: {
+    name: string;
+    owner: string;
+    collaborators: string[];
+  }
+): Promise<TeamDocument> => {
+  const team = await Team.findById(id);
+
+  if (team === null) {
+    throw new Error(`User with id ${id} not found`);
+  }
+
+  if (updates.name) team.name = updates.name;
+  if (updates.owner) team.owner = updates.owner;
+  if (updates.collaborators) team.collaborators = updates.collaborators;
+
+  return await team.save();
 };

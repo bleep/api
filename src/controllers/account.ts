@@ -11,7 +11,7 @@ export const getAccount = async (ctx: Context): Promise<void> => {
 
 export const deleteAccount = async (ctx: Context): Promise<void> => {
   try {
-    ctx.body = removeUser(ctx.state.user._id);
+    ctx.body = await removeUser(ctx.state.user._id);
   } catch (e) {
     ctx.throw(404, e);
   }
@@ -21,7 +21,7 @@ export const patchAccount = async (ctx: Context): Promise<void> => {
   const { name, password, email } = ctx.request.body;
 
   try {
-    ctx.body = updateUser(ctx.state.user._id, { name, password, email });
+    ctx.body = await updateUser(ctx.state.user._id, { name, password, email });
   } catch (e) {
     ctx.throw(400, e);
   }

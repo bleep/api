@@ -4,7 +4,7 @@ import { removeTeamsUserOwns } from "./teams";
 export const retrieveUserWithPasswordFromEmail = async (
   email: string
 ): Promise<UserDocument> => {
-  const user = await User.findOne({ email }).select("password");
+  const user = await User.findOne({ email }).select("+password");
 
   if (user === null) {
     throw new Error(`User with email ${email} not found`);
@@ -31,7 +31,7 @@ export const createUser = async (properties: {
   const user = new User({
     name: { first: properties.name.first, last: properties.name.last },
     email: properties.email,
-    password: properties.email,
+    password: properties.password,
   });
 
   return await user.save();

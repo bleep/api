@@ -1,8 +1,8 @@
 import Router from "koa-router";
-import { createUser } from "../../controllers/users";
+import { postUser } from "../../controllers/users";
 
 const router = new Router();
 
-router.post("/", createUser);
+router.post("/", postUser);
 
 export default router;

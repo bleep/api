@@ -3,13 +3,11 @@ import { Model } from "mongoose";
 import { Document, Schema, model } from "mongoose";
 import validator from "validator";
 
-export interface UserExposedProperties {
+export interface User {
   name: { first: string; last: string };
   email: string;
   password: string;
 }
-
-export type User = UserExposedProperties;
 
 export interface UserDocument extends User, Document {}
 

@@ -4,19 +4,19 @@ import { UserDocument } from "./user";
 export interface Team {
   name: string;
   owner: Types.ObjectId | UserDocument;
-  collaborators: [Types.ObjectId | UserDocument];
+  collaborators: (Types.ObjectId | UserDocument)[];
 }
 
 interface TeamBaseDocument extends Team, Document {}
 
 export interface TeamDocument extends TeamBaseDocument {
   owner: UserDocument["_id"];
-  collaborators: [UserDocument["_id"]];
+  collaborators: UserDocument["_id"][];
 }
 
 export interface TeamPopulatedDocument extends TeamBaseDocument {
   owner: UserDocument;
-  collaborators: [UserDocument];
+  collaborators: UserDocument[];
 }
 
 export type TeamModel = Model<TeamDocument>;
