@@ -1,8 +1,14 @@
 import { Context } from "koa";
 import { createToken } from "../services/tokens";
+import * as z from "zod";
 
 export const postTokens = async (ctx: Context): Promise<void> => {
-  const { email, password } = ctx.request.body;
+  const schema = z.object({
+    email: z.string().email(),
+    password: z.string(),
+  });
+
+  const { email, password } = schema.parse(ctx.request.body);
 
   try {
     ctx.status = 201;

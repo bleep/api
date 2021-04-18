@@ -51,9 +51,9 @@ export const removeTeam = async (id: string): Promise<TeamDocument> => {
 export const updateTeam = async (
   id: string,
   updates: {
-    name: string;
-    owner: string;
-    collaborators: string[];
+    name?: string;
+    owner?: string;
+    collaborators?: string[];
   }
 ): Promise<TeamDocument> => {
   const team = await Team.findById(id);

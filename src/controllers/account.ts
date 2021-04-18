@@ -1,4 +1,5 @@
 import { Context } from "koa";
+import * as z from "zod";
 import { removeUser, retrieveUser, updateUser } from "../services/users";
 
 export const getAccount = async (ctx: Context): Promise<void> => {
@@ -18,7 +19,16 @@ export const deleteAccount = async (ctx: Context): Promise<void> => {
 };
 
 export const patchAccount = async (ctx: Context): Promise<void> => {
-  const { name, password, email } = ctx.request.body;
+  const schema = z.object({
+    name: z.object({
+      first: z.string(),
+      last: z.string(),
+    }),
+    password: z.string(),
+    email: z.string().email(),
+  });
+
+  const { email, password, name } = schema.parse(ctx.request.body);
 
   try {
     ctx.body = await updateUser(ctx.state.user._id, { name, password, email });

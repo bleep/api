@@ -1,4 +1,5 @@
 import { Context } from "koa";
+import * as z from "zod";
 import {
   createTeam,
   removeTeam,
@@ -16,7 +17,11 @@ export const getTeams = async (ctx: Context): Promise<void> => {
 };
 
 export const postTeams = async (ctx: Context): Promise<void> => {
-  const { name } = ctx.request.body;
+  const schema = z.object({
+    name: z.string(),
+  });
+
+  const { name } = schema.parse(ctx.request.body);
 
   try {
     ctx.status = 201;
@@ -43,7 +48,13 @@ export const deleteTeam = async (ctx: Context): Promise<void> => {
 };
 
 export const patchTeam = async (ctx: Context): Promise<void> => {
-  const { name, owner, collaborators } = ctx.request.body;
+  const schema = z.object({
+    name: z.string().optional(),
+    owner: z.string().optional(),
+    collaborators: z.string().array().optional(),
+  });
+
+  const { name, owner, collaborators } = schema.parse(ctx.request.body);
 
   try {
     ctx.body = await updateTeam(ctx.params.teamId, {
