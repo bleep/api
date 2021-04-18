@@ -15,7 +15,12 @@ export const createToken = async (
     }
 
     return sign(
-      { _id: user._id, email: user.email, name: user.name },
+      {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        customerId: user.customerId,
+      },
       process.env.JWT_SECRET
     );
   } else {

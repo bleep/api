@@ -1,4 +1,5 @@
 import User, { UserDocument } from "../models/user";
+import { createCustomer } from "./stripe";
 import { removeTeamsUserOwns } from "./teams";
 
 export const retrieveUserWithPasswordFromEmail = async (
@@ -28,10 +29,16 @@ export const createUser = async (properties: {
   email: string;
   password: string;
 }): Promise<UserDocument> => {
+  const customer = await createCustomer({
+    name: `${properties.name.first} ${properties.name.last}`,
+    email: properties.email,
+  });
+
   const user = new User({
     name: { first: properties.name.first, last: properties.name.last },
     email: properties.email,
     password: properties.password,
+    customerId: customer.id,
   });
 
   return await user.save();

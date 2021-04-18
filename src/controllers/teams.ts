@@ -15,7 +15,7 @@ export const getTeams = async (ctx: Context): Promise<void> => {
   }
 };
 
-export const postTeam = async (ctx: Context): Promise<void> => {
+export const postTeams = async (ctx: Context): Promise<void> => {
   const { name } = ctx.request.body;
 
   try {

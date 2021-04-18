@@ -1,6 +1,6 @@
 import Router from "koa-router";
 import {
-  postTeam,
+  postTeams,
   deleteTeam,
   getTeam,
   getTeams,
@@ -10,7 +10,7 @@ import {
 const router = new Router();
 
 router.get("/", getTeams);
-router.post("/", postTeam);
+router.post("/", postTeams);
 router.get("/:teamId", getTeam);
 router.del("/:teamId", deleteTeam);
 router.patch("/:teamId", patchTeam);

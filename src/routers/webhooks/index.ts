@@ -1,8 +1,8 @@
 import Router from "koa-router";
-import { postTokens } from "../../controllers/tokens";
+import stripeRouter from "./stripe";
 
 const router = new Router();
 
-router.post("/", postTokens);
+router.use("/stripe", stripeRouter.routes());
 
 export default router;

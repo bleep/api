@@ -7,6 +7,7 @@ export interface User {
   name: { first: string; last: string };
   email: string;
   password: string;
+  customerId: string;
 }
 
 export interface UserDocument extends User, Document {}
@@ -17,24 +18,28 @@ export const UserSchema = new Schema<UserDocument, UserModel>({
   name: {
     first: {
       type: String,
-      required: "First name is required.",
+      required: true,
     },
     last: {
       type: String,
-      required: "Last name is required.",
+      required: true,
     },
   },
   email: {
     type: String,
     unique: true,
-    required: "Email is required",
+    required: true,
     trim: true,
     validate: [validator.isEmail, "Invalid email."],
   },
   password: {
     type: String,
-    required: "Password is required.",
+    required: true,
     select: false,
+  },
+  customerId: {
+    type: String,
+    required: true,
   },
 });
 
