@@ -1,5 +1,4 @@
 import Email, { EmailDocument } from "../models/email";
-import User from "../models/user";
 
 export const retrieveEmailByAddress = async (
   address: string

@@ -13,6 +13,12 @@ export const createCustomer = async (properties: {
   });
 };
 
+export const removeCustomer = async (
+  id: string
+): Promise<Stripe.Response<Stripe.DeletedCustomer>> => {
+  return await stripe.customers.del(id);
+};
+
 export const createBillingPortalSession = async (properties: {
   customerId: string;
   returnUrl: string;

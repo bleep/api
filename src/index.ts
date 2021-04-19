@@ -1,6 +1,7 @@
 import Koa from "koa";
 import { connect } from "mongoose";
 import router from "./routers";
+import cors from "@koa/cors";
 
 const init = async () => {
   const port = process.env.PORT || 5000;
@@ -13,6 +14,8 @@ const init = async () => {
   });
 
   const app = new Koa();
+
+  app.use(cors());
 
   app.use(async (ctx, next) => {
     try {

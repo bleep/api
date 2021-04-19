@@ -1,7 +1,7 @@
 import { EmailDocument } from "../models/email";
 import User, { UserDocument } from "../models/user";
 import { createEmail, removeEmail } from "./email";
-import { createCustomer } from "./stripe";
+import { createCustomer, removeCustomer } from "./stripe";
 import { removeTeamsUserOwns } from "./teams";
 
 export const retrieveUserAndPasswordFromEmail = async (
@@ -56,6 +56,7 @@ export const removeUser = async (id: string): Promise<UserDocument> => {
 
   await removeTeamsUserOwns(id);
   await removeEmail(removedUser.email);
+  await removeCustomer(removedUser.customerId);
 
   return removedUser;
 };

@@ -17,13 +17,13 @@ export const getTeams = async (ctx: Context): Promise<void> => {
 };
 
 export const postTeams = async (ctx: Context): Promise<void> => {
-  const schema = z.object({
-    name: z.string(),
-  });
-
-  const { name } = schema.parse(ctx.request.body);
-
   try {
+    const schema = z.object({
+      name: z.string(),
+    });
+
+    const { name } = schema.parse(ctx.request.body);
+
     ctx.status = 201;
     ctx.body = await createTeam({ name, owner: ctx.state.user._id });
   } catch (e) {
@@ -48,15 +48,15 @@ export const deleteTeam = async (ctx: Context): Promise<void> => {
 };
 
 export const patchTeam = async (ctx: Context): Promise<void> => {
-  const schema = z.object({
-    name: z.string().optional(),
-    owner: z.string().optional(),
-    collaborators: z.string().array().optional(),
-  });
-
-  const { name, owner, collaborators } = schema.parse(ctx.request.body);
-
   try {
+    const schema = z.object({
+      name: z.string().optional(),
+      owner: z.string().optional(),
+      collaborators: z.string().array().optional(),
+    });
+
+    const { name, owner, collaborators } = schema.parse(ctx.request.body);
+
     ctx.body = await updateTeam(ctx.params.teamId, {
       name,
       owner,
