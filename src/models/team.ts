@@ -41,4 +41,4 @@ export const TeamSchema = new Schema<TeamDocument, TeamModel>({
   ],
 });
 
-export default model<TeamDocument, TeamModel>("Team", TeamSchema);
+export default model("Team", TeamSchema);

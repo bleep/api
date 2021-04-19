@@ -1,9 +1,11 @@
+import { EmailDocument } from "../models/email";
 import User, { UserDocument } from "../models/user";
+import { createEmail, removeEmail } from "./email";
 import { createCustomer } from "./stripe";
 import { removeTeamsUserOwns } from "./teams";
 
-export const retrieveUserWithPasswordFromEmail = async (
-  email: string
+export const retrieveUserAndPasswordFromEmail = async (
+  email: EmailDocument
 ): Promise<UserDocument> => {
   const user = await User.findOne({ email }).select("+password");
 
@@ -29,6 +31,7 @@ export const createUser = async (properties: {
   email: string;
   password: string;
 }): Promise<UserDocument> => {
+  const email = await createEmail({ address: properties.email });
   const customer = await createCustomer({
     name: `${properties.name.first} ${properties.name.last}`,
     email: properties.email,
@@ -36,22 +39,23 @@ export const createUser = async (properties: {
 
   const user = new User({
     name: { first: properties.name.first, last: properties.name.last },
-    email: properties.email,
     password: properties.password,
     customerId: customer.id,
+    email,
   });
 
   return await user.save();
 };
 
 export const removeUser = async (id: string): Promise<UserDocument> => {
-  await removeTeamsUserOwns(id);
-
   const removedUser = await User.findByIdAndDelete(id);
 
   if (removedUser === null) {
     throw new Error(`User with id ${id} not found.`);
   }
+
+  await removeTeamsUserOwns(id);
+  await removeEmail(removedUser.email);
 
   return removedUser;
 };
@@ -59,9 +63,9 @@ export const removeUser = async (id: string): Promise<UserDocument> => {
 export const updateUser = async (
   id: string,
   updates: {
-    name: { first: string; last: string };
-    email: string;
-    password: string;
+    name: { first: string; last: string } | undefined;
+    email: string | undefined;
+    password: string | undefined;
   }
 ): Promise<UserDocument> => {
   const user = await User.findById(id);
@@ -71,8 +75,11 @@ export const updateUser = async (
   }
 
   if (updates.name) user.name = updates.name;
-  if (updates.email) user.email = updates.email;
   if (updates.password) user.password = updates.password;
+  if (updates.email) {
+    await removeEmail(user.email);
+    user.email = await createEmail({ address: updates.email });
+  }
 
   return await user.save();
 };

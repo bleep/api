@@ -20,12 +20,14 @@ export const deleteAccount = async (ctx: Context): Promise<void> => {
 
 export const patchAccount = async (ctx: Context): Promise<void> => {
   const schema = z.object({
-    name: z.object({
-      first: z.string(),
-      last: z.string(),
-    }),
-    password: z.string(),
-    email: z.string().email(),
+    name: z
+      .object({
+        first: z.string(),
+        last: z.string(),
+      })
+      .optional(),
+    password: z.string().optional(),
+    email: z.string().email().optional(),
   });
 
   const { email, password, name } = schema.parse(ctx.request.body);

@@ -1,9 +1,7 @@
 import Stripe from "stripe";
 
-const stripe = new Stripe(
-  "sk_test_51IhQLMA4gTFSLq4qSltIgKoIXAuFMEK23dvffoM1X4jkmm6Zv1ihXjp73hD3ivgzOBy0LSbijr7xam9NkMiONtqz00JjoZX4TK",
-  { apiVersion: "2020-08-27" }
-);
+const stripeApiKey = process.env.STRIPE_API_KEY || "";
+const stripe = new Stripe(stripeApiKey, { apiVersion: "2020-08-27" });
 
 export const createCustomer = async (properties: {
   name: string;

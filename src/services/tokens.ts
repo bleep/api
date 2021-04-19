@@ -1,12 +1,14 @@
 import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
-import { retrieveUserWithPasswordFromEmail } from "./users";
+import { retrieveEmailByAddress } from "./email";
+import { retrieveUserAndPasswordFromEmail } from "./users";
 
 export const createToken = async (
-  email: string,
+  emailAddress: string,
   password: string
 ): Promise<string> => {
-  const user = await retrieveUserWithPasswordFromEmail(email);
+  const email = await retrieveEmailByAddress(emailAddress);
+  const user = await retrieveUserAndPasswordFromEmail(email);
   const match = await compare(password, user.password);
 
   if (match) {
