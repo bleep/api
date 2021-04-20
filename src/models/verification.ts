@@ -1,13 +1,24 @@
 import { Model } from "mongoose";
+import { Types } from "mongoose";
 import { Document, Schema, model } from "mongoose";
+import mongooseAutoPopulate from "mongoose-autopopulate";
+import { EmailDocument } from "./email";
 
 export interface Verification {
-  email: string;
-  code: string;
+  email: Types.ObjectId | EmailDocument;
   dateCreated: Date;
 }
 
-export interface VerificationDocument extends Verification, Document {}
+interface VerificationBaseDocument extends Verification, Document {}
+
+export interface VerificationDocument extends VerificationBaseDocument {
+  email: EmailDocument["_id"];
+}
+
+export interface VerificationPopulatedDocument
+  extends VerificationBaseDocument {
+  email: EmailDocument;
+}
 
 export type VerificationModel = Model<VerificationDocument>;
 
@@ -19,16 +30,18 @@ export const VerificationSchema = new Schema<
     type: Schema.Types.ObjectId,
     ref: "Email",
     required: true,
-  },
-  code: {
-    type: String,
-    required: true,
+    autopopulate: true,
+    immutable: true,
   },
   dateCreated: {
     type: Date,
     default: Date.now(),
     expires: 500,
+    immutable: true,
   },
 });
+
+// @ts-expect-error The types work out just fine, mongoose-autopopulate has an incorrect definition file.
+VerificationSchema.plugin(mongooseAutoPopulate);
 
 export default model("Verification", VerificationSchema);

@@ -44,7 +44,9 @@ export const createUser = async (properties: {
     email,
   });
 
-  return await user.save();
+  const savedUser = await user.save();
+
+  return savedUser;
 };
 
 export const removeUser = async (id: string): Promise<UserDocument> => {

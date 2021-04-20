@@ -1,4 +1,5 @@
 import Email, { EmailDocument } from "../models/email";
+import { createVerification } from "./verifications";
 
 export const retrieveEmailByAddress = async (
   address: string
@@ -17,7 +18,11 @@ export const createEmail = async (properties: {
 }): Promise<EmailDocument> => {
   const email = new Email({ address: properties.address });
 
-  return await email.save();
+  const savedEmail = await email.save();
+
+  await createVerification({ emailId: savedEmail._id });
+
+  return savedEmail;
 };
 
 export const removeEmail = async (id: string): Promise<EmailDocument> => {
@@ -28,4 +33,19 @@ export const removeEmail = async (id: string): Promise<EmailDocument> => {
   }
 
   return removedEmail;
+};
+
+export const updateEmail = async (
+  id: string,
+  properties: { verified: boolean }
+): Promise<EmailDocument> => {
+  const updatedEmail = await Email.findByIdAndUpdate(id, {
+    verified: properties.verified,
+  });
+
+  if (updatedEmail === null) {
+    throw new Error(`Email with id ${id} not found.`);
+  }
+
+  return updatedEmail;
 };

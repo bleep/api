@@ -4,7 +4,7 @@ import validator from "validator";
 
 export interface Email {
   address: string;
-  verified: string;
+  verified: boolean;
 }
 
 export interface EmailDocument extends Email, Document {}
@@ -17,6 +17,8 @@ export const EmailSchema = new Schema<EmailDocument, EmailModel>({
     required: true,
     unique: true,
     trim: true,
+    index: true,
+    immutable: true,
     validate: [validator.isEmail, "Invalid email."],
   },
   verified: {

@@ -19,6 +19,7 @@
   "homepage": "https://github.com/bleep/api#readme",
   "dependencies": {
     "@koa/cors": "^3.1.0",
+    "@sendgrid/mail": "^7.4.2",
     "@types/mongoose-autopopulate": "^0.10.1",
     "bcrypt": "^5.0.1",
     "dotenv": "^8.2.0",
