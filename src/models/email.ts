@@ -13,16 +13,15 @@ export type EmailModel = Model<EmailDocument>;
 
 export const EmailSchema = new Schema<EmailDocument, EmailModel>({
   address: {
-    type: String,
+    type: Schema.Types.String,
     required: true,
     unique: true,
     trim: true,
-    index: true,
     immutable: true,
     validate: [validator.isEmail, "Invalid email."],
   },
   verified: {
-    type: Boolean,
+    type: Schema.Types.Boolean,
     default: false,
   },
 });

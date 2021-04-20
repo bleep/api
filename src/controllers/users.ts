@@ -16,6 +16,7 @@ export const postUsers = async (ctx: Context): Promise<void> => {
     const { name, email, password } = schema.parse(ctx.request.body);
 
     await createUser({ name, email, password });
+
     ctx.status = 201;
   } catch (e) {
     ctx.throw(400, e);

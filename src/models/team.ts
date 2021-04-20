@@ -23,7 +23,7 @@ export type TeamModel = Model<TeamDocument>;
 
 export const TeamSchema = new Schema<TeamDocument, TeamModel>({
   name: {
-    type: String,
+    type: Schema.Types.String,
     required: true,
   },
   owner: {

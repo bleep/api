@@ -3,6 +3,11 @@ import { connect } from "mongoose";
 import router from "./routers";
 import cors from "@koa/cors";
 
+import Team from "./models/team";
+import User from "./models/user";
+import Email from "./models/email";
+import Verification from "./models/verification";
+
 const init = async () => {
   const port = process.env.PORT || 5000;
   const dbUrl = process.env.MONGO_DB_CONNECTION_URL || "";
@@ -12,6 +17,11 @@ const init = async () => {
     useUnifiedTopology: true,
     useCreateIndex: true,
   });
+
+  await Team.init();
+  await User.init();
+  await Email.init();
+  await Verification.init();
 
   const app = new Koa();
 

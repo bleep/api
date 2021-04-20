@@ -26,11 +26,11 @@ export type UserModel = Model<UserDocument>;
 export const UserSchema = new Schema<UserDocument, UserModel>({
   name: {
     first: {
-      type: String,
+      type: Schema.Types.String,
       required: true,
     },
     last: {
-      type: String,
+      type: Schema.Types.String,
       required: true,
     },
   },
@@ -42,12 +42,12 @@ export const UserSchema = new Schema<UserDocument, UserModel>({
     autopopulate: true,
   },
   password: {
-    type: String,
+    type: Schema.Types.String,
     required: true,
     select: false,
   },
   customerId: {
-    type: String,
+    type: Schema.Types.String,
     required: true,
   },
 });
