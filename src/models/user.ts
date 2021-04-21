@@ -55,9 +55,4 @@ export const UserSchema = new Schema<UserDocument, UserModel>({
 // @ts-expect-error The types work out just fine, mongoose-autopopulate has an incorrect definition file.
 UserSchema.plugin(mongooseAutoPopulate);
 
-UserSchema.pre<UserDocument>("save", async function (next) {
-  this.password = await hash(this.password, 10);
-  next();
-});
-
 export default model("User", UserSchema);

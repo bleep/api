@@ -1,3 +1,4 @@
+import { hash } from "bcrypt";
 import { EmailDocument } from "../models/email";
 import User, { UserDocument } from "../models/user";
 import { createEmail, removeEmail } from "./email";
@@ -39,7 +40,7 @@ export const createUser = async (properties: {
 
   const user = new User({
     name: { first: properties.name.first, last: properties.name.last },
-    password: properties.password,
+    password: await hash(properties.password, 10),
     customerId: customer.id,
     email,
   });
@@ -71,17 +72,22 @@ export const updateUser = async (
     password: string | undefined;
   }
 ): Promise<UserDocument> => {
-  const user = await User.findById(id);
+  const user = await User.findById(id).select("+password");
 
   if (user === null) {
     throw new Error(`User with id ${id} not found`);
   }
 
   if (updates.name) user.name = updates.name;
-  if (updates.password) user.password = updates.password;
+  if (updates.password) user.password = await hash(updates.password, 10);
   if (updates.email) {
-    await removeEmail(user.email);
+    if (updates.email === user.email.address) {
+      throw new Error("New email cannot be the same address.");
+    }
+
+    const prevEmailId = user.email._id;
     user.email = await createEmail({ address: updates.email });
+    await removeEmail(prevEmailId);
   }
 
   return await user.save();
