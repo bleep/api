@@ -19,10 +19,10 @@ export const getTeams = async (ctx: Context): Promise<void> => {
 export const postTeams = async (ctx: Context): Promise<void> => {
   try {
     const schema = z.object({
-      name: z.string(),
+      name: z.string().optional(),
     });
 
-    const { name } = schema.parse(ctx.request.body);
+    const { name = "New Team" } = schema.parse(ctx.request.body);
 
     ctx.status = 201;
     ctx.body = await createTeam({ name, owner: ctx.state.user._id });

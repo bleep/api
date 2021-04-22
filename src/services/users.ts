@@ -3,7 +3,7 @@ import { EmailDocument } from "../models/email";
 import User, { UserDocument } from "../models/user";
 import { createEmail, removeEmail } from "./email";
 import { createCustomer, removeCustomer } from "./stripe";
-import { removeTeamsUserOwns } from "./teams";
+import { createTeam, removeTeamsUserOwns } from "./teams";
 
 export const retrieveUserAndPasswordFromEmail = async (
   email: EmailDocument
@@ -46,6 +46,11 @@ export const createUser = async (properties: {
   });
 
   const savedUser = await user.save();
+
+  await createTeam({
+    name: `${properties.name.first}'s Team`,
+    owner: user._id,
+  });
 
   return savedUser;
 };

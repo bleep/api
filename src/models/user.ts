@@ -1,4 +1,3 @@
-import { hash } from "bcrypt";
 import { Model, Types } from "mongoose";
 import { Document, Schema, model } from "mongoose";
 import { EmailDocument } from "./email";

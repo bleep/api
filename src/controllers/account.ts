@@ -27,7 +27,7 @@ export const patchAccount = async (ctx: Context): Promise<void> => {
           last: z.string(),
         })
         .optional(),
-      password: z.string().optional(),
+      password: z.string().min(5).max(50).optional(),
       email: z.string().email().optional(),
     });
 
