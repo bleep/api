@@ -16,7 +16,7 @@ export const removeTeamsUserOwns = async (
 export const retrieveTeamsUserOwns = async (
   userId: string
 ): Promise<TeamDocument[]> => {
-  return await Team.find({ owner: userId });
+  return await Team.find({ owner: userId }).sort("-createdAt");
 };
 
 export const retrieveTeam = async (id: string): Promise<TeamDocument> => {

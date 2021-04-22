@@ -21,24 +21,27 @@ export interface TeamPopulatedDocument extends TeamBaseDocument {
 
 export type TeamModel = Model<TeamDocument>;
 
-export const TeamSchema = new Schema<TeamDocument, TeamModel>({
-  name: {
-    type: Schema.Types.String,
-    required: true,
-  },
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-  collaborators: [
-    {
+export const TeamSchema = new Schema<TeamDocument, TeamModel>(
+  {
+    name: {
+      type: Schema.Types.String,
+      required: true,
+    },
+    owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      default: [],
     },
-  ],
-});
+    collaborators: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        default: [],
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 export default model("Team", TeamSchema);

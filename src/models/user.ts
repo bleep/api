@@ -22,34 +22,37 @@ export interface UserPopulatedDocument extends UserBaseDocument {
 
 export type UserModel = Model<UserDocument>;
 
-export const UserSchema = new Schema<UserDocument, UserModel>({
-  name: {
-    first: {
+export const UserSchema = new Schema<UserDocument, UserModel>(
+  {
+    name: {
+      first: {
+        type: Schema.Types.String,
+        required: true,
+      },
+      last: {
+        type: Schema.Types.String,
+        required: true,
+      },
+    },
+    email: {
+      type: Schema.Types.ObjectId,
+      ref: "Email",
+      required: true,
+      unique: true,
+      autopopulate: true,
+    },
+    password: {
+      type: Schema.Types.String,
+      required: true,
+      select: false,
+    },
+    customerId: {
       type: Schema.Types.String,
       required: true,
     },
-    last: {
-      type: Schema.Types.String,
-      required: true,
-    },
   },
-  email: {
-    type: Schema.Types.ObjectId,
-    ref: "Email",
-    required: true,
-    unique: true,
-    autopopulate: true,
-  },
-  password: {
-    type: Schema.Types.String,
-    required: true,
-    select: false,
-  },
-  customerId: {
-    type: Schema.Types.String,
-    required: true,
-  },
-});
+  { timestamps: true }
+);
 
 // @ts-expect-error The types work out just fine, mongoose-autopopulate has an incorrect definition file.
 UserSchema.plugin(mongooseAutoPopulate);
