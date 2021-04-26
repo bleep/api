@@ -1,3 +1,4 @@
+import createHttpError from "http-errors";
 import Recovery, { RecoveryDocument } from "../models/recovery";
 import { retrieveEmailByAddress } from "./email";
 import { sendRecoveryEmail } from "./sendgrid";
@@ -18,7 +19,7 @@ export const removeRecovery = async (id: string): Promise<string> => {
   const recovery = await Recovery.findById(id);
 
   if (recovery === null) {
-    throw new Error(`Recovery with id ${id} not found.`);
+    throw createHttpError("Recovery not found.");
   }
 
   await recovery.delete();

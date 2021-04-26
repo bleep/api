@@ -1,3 +1,4 @@
+import createHttpError from "http-errors";
 import Verification, {
   VerificationDocument,
   VerificationPopulatedDocument,
@@ -22,7 +23,7 @@ export const removeVerification = async (
   const verification = await Verification.findById(id);
 
   if (verification === null) {
-    throw new Error(`Verification with id ${id} not found.`);
+    throw createHttpError(403, "Verification not found.");
   }
 
   await updateEmail(verification.email._id, { verified: true });

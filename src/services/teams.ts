@@ -1,3 +1,4 @@
+import createHttpError from "http-errors";
 import Team, { TeamDocument } from "../models/team";
 
 export const removeTeamsUserOwns = async (
@@ -23,7 +24,7 @@ export const retrieveTeam = async (id: string): Promise<TeamDocument> => {
   const team = await Team.findById(id);
 
   if (team === null) {
-    throw new Error(`Team with id ${id} not found.`);
+    throw createHttpError(403, "Team not found");
   }
 
   return team;
@@ -42,7 +43,7 @@ export const removeTeam = async (id: string): Promise<TeamDocument> => {
   const removedTeam = await Team.findByIdAndDelete(id);
 
   if (removedTeam === null) {
-    throw new Error(`Team with id ${id} not found.`);
+    throw createHttpError(403, "Team not found");
   }
 
   return removedTeam;
@@ -56,11 +57,7 @@ export const updateTeam = async (
     collaborators?: string[];
   }
 ): Promise<TeamDocument> => {
-  const team = await Team.findById(id);
-
-  if (team === null) {
-    throw new Error(`User with id ${id} not found`);
-  }
+  const team = await retrieveTeam(id);
 
   if (updates.name) team.name = updates.name;
   if (updates.owner) team.owner = updates.owner;

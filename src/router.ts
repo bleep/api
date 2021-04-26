@@ -1,6 +1,7 @@
 import koaBody from "koa-body";
 import jwt from "koa-jwt";
 import Router from "koa-router";
+import { ENVIRONMENT } from "./constants";
 import { deleteAccount, getAccount, patchAccount } from "./controllers/account";
 import { deleteRecovery, postRecoveries } from "./controllers/recoveries";
 import {
@@ -35,7 +36,7 @@ router
   .post("/recoveries", postRecoveries)
   .del("/recoveries/:recoveryId", deleteRecovery);
 
-router.use(jwt({ secret: process.env.JWT_SECRET || "" }));
+router.use(jwt({ secret: ENVIRONMENT.JWT_SECRET || "" }));
 
 router
   .get("/account", getAccount)

@@ -1,3 +1,4 @@
+import createHttpError from "http-errors";
 import Email, { EmailDocument } from "../models/email";
 import { createVerification } from "./verifications";
 
@@ -7,7 +8,7 @@ export const retrieveEmailByAddress = async (
   const email = await Email.findOne({ address });
 
   if (email === null) {
-    throw new Error(`Email with address ${address} not found.`);
+    throw createHttpError(403, "Email not found.");
   }
 
   return email;
@@ -29,7 +30,7 @@ export const removeEmail = async (id: string): Promise<EmailDocument> => {
   const removedEmail = await Email.findByIdAndDelete(id);
 
   if (removedEmail === null) {
-    throw new Error(`Email with id ${id} not found.`);
+    throw createHttpError(403, "Email not found");
   }
 
   return removedEmail;
@@ -44,7 +45,7 @@ export const updateEmail = async (
   });
 
   if (updatedEmail === null) {
-    throw new Error(`Email with id ${id} not found.`);
+    throw createHttpError(403, "Email not found.");
   }
 
   return updatedEmail;

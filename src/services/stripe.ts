@@ -1,6 +1,7 @@
 import Stripe from "stripe";
+import { ENVIRONMENT } from "../constants";
 
-const stripeApiKey = process.env.STRIPE_API_KEY || "";
+const stripeApiKey = ENVIRONMENT.STRIPE_API_KEY || "";
 const stripe = new Stripe(stripeApiKey, { apiVersion: "2020-08-27" });
 
 export const createCustomer = async (properties: {

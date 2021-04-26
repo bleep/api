@@ -1,4 +1,5 @@
 import { hash } from "bcrypt";
+import createHttpError from "http-errors";
 import { EmailDocument } from "../models/email";
 import User, { UserDocument } from "../models/user";
 import { createEmail, removeEmail } from "./email";
@@ -11,7 +12,7 @@ export const retrieveUserAndPasswordFromEmail = async (
   const user = await User.findOne({ email }).select("+password");
 
   if (user === null) {
-    throw new Error(`User with email ${email} not found`);
+    throw createHttpError(403, "User not found.");
   }
 
   return user;
@@ -21,7 +22,7 @@ export const retrieveUser = async (id: string): Promise<UserDocument> => {
   const user = await User.findById(id);
 
   if (user === null) {
-    throw new Error(`User with id ${id} not found.`);
+    throw createHttpError(403, "User not found.");
   }
 
   return user;
@@ -59,7 +60,7 @@ export const removeUser = async (id: string): Promise<UserDocument> => {
   const removedUser = await User.findByIdAndDelete(id);
 
   if (removedUser === null) {
-    throw new Error(`User with id ${id} not found.`);
+    throw createHttpError(403, "User not found");
   }
 
   await removeTeamsUserOwns(id);
@@ -80,7 +81,7 @@ export const updateUser = async (
   const user = await User.findById(id).select("+password");
 
   if (user === null) {
-    throw new Error(`User with id ${id} not found`);
+    throw createHttpError("User not found.");
   }
 
   if (updates.name) user.name = updates.name;

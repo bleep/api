@@ -1,5 +1,7 @@
 import { compare } from "bcrypt";
+import createHttpError from "http-errors";
 import { sign } from "jsonwebtoken";
+import { ENVIRONMENT } from "../constants";
 import { retrieveEmailByAddress } from "./email";
 import { retrieveUserAndPasswordFromEmail } from "./users";
 
@@ -7,8 +9,11 @@ export const createToken = async (
   emailAddress: string,
   password?: string
 ): Promise<string> => {
-  if (process.env.JWT_SECRET === undefined) {
-    throw new Error("Required environement variable JWT_SECRET not found.");
+  if (ENVIRONMENT.JWT_SECRET === undefined) {
+    throw createHttpError(
+      500,
+      "Required environment variable JWT_SECRET not found."
+    );
   }
 
   const email = await retrieveEmailByAddress(emailAddress);
@@ -20,7 +25,7 @@ export const createToken = async (
       name: user.name,
       customerId: user.customerId,
     },
-    process.env.JWT_SECRET
+    ENVIRONMENT.JWT_SECRET
   );
 
   if (password === undefined) {
@@ -30,7 +35,7 @@ export const createToken = async (
   const match = await compare(password, user.password);
 
   if (match === false) {
-    throw new Error("Invalid password.");
+    throw createHttpError(403, "Invalid password.");
   }
 
   return token;
