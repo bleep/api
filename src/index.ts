@@ -1,8 +1,9 @@
 import Koa from "koa";
+import { MongoError } from "mongodb";
 import { connect } from "mongoose";
 import router from "./router";
 import cors from "@koa/cors";
-import { ApplicationState } from "./types";
+import { ZodError } from "zod";
 
 const init = async (): Promise<void> => {
   const port = process.env.PORT || 5000;
@@ -14,7 +15,45 @@ const init = async (): Promise<void> => {
     useCreateIndex: true,
   });
 
-  const app = new Koa<ApplicationState>();
+  const app = new Koa();
+
+  app.use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (e) {
+      if (e instanceof ZodError) {
+        ctx.status = 422;
+        ctx.body = {
+          error: true,
+          status: 422,
+          name: e.name,
+          message: e.message,
+        };
+
+        return;
+      }
+
+      if (e instanceof MongoError) {
+        ctx.status = 403;
+        ctx.body = {
+          error: true,
+          status: 403,
+          name: e.name,
+          message: e.message,
+        };
+
+        return;
+      }
+
+      ctx.status = 500;
+      ctx.body = {
+        error: true,
+        status: 500,
+        name: "InternalServerError",
+        message: "There was a server error.",
+      };
+    }
+  });
 
   app.use(cors());
   app.use(router.routes());

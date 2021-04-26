@@ -20,9 +20,8 @@ import {
   deleteVerification,
   postVerifications,
 } from "./controllers/verifications";
-import { ApplicationState } from "./types";
 
-const router = new Router<ApplicationState>();
+const router = new Router();
 
 router.prefix("/api");
 

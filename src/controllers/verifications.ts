@@ -6,26 +6,17 @@ import {
 import * as z from "zod";
 
 export const postVerifications = async (ctx: Context): Promise<void> => {
-  try {
-    const schema = z.object({ emailId: z.string() });
-    const { emailId } = schema.parse(ctx.request.body);
+  const bodySchema = z.object({ emailId: z.string() });
+  const { emailId } = bodySchema.parse(ctx.request.body);
 
-    ctx.status = 201;
-    await createVerification({ emailId });
-  } catch (e) {
-    ctx.throw(400, e);
-  }
+  ctx.status = 201;
+  await createVerification({ emailId });
 };
 
 export const deleteVerification = async (ctx: Context): Promise<void> => {
-  try {
-    const requestParamsSchema = z.object({ verificationId: z.string() });
+  const paramsSchema = z.object({ verificationId: z.string() });
+  const { verificationId } = paramsSchema.parse(ctx.params);
 
-    const { verificationId } = requestParamsSchema.parse(ctx.params);
-
-    ctx.status = 200;
-    await removeVerification(verificationId);
-  } catch (e) {
-    ctx.throw(400, e);
-  }
+  ctx.status = 200;
+  await removeVerification(verificationId);
 };

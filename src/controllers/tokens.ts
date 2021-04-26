@@ -3,17 +3,12 @@ import { createToken } from "../services/tokens";
 import * as z from "zod";
 
 export const postTokens = async (ctx: Context): Promise<void> => {
-  try {
-    const schema = z.object({
-      email: z.string().email(),
-      password: z.string(),
-    });
+  const bodySchema = z.object({
+    email: z.string().email(),
+    password: z.string(),
+  });
+  const { password, email } = bodySchema.parse(ctx.request.body);
 
-    const { email, password } = schema.parse(ctx.request.body);
-
-    ctx.status = 201;
-    ctx.body = await createToken(email, password);
-  } catch (e) {
-    ctx.throw(400, e);
-  }
+  ctx.status = 201;
+  ctx.body = await createToken(email, password);
 };
