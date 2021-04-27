@@ -3,10 +3,10 @@ import * as z from "zod";
 import { createRecovery, removeRecovery } from "../services/recoveries";
 
 export const postRecoveries = async (ctx: Context): Promise<void> => {
-  const bodySchema = z.object({ email: z.string() });
-  const { email } = bodySchema.parse(ctx.request.body);
+  const bodySchema = z.object({ emailAddress: z.string().email() });
+  const { emailAddress } = bodySchema.parse(ctx.request.body);
 
-  await createRecovery(email);
+  await createRecovery(emailAddress);
 
   ctx.status = 201;
 };

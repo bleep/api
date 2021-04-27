@@ -88,7 +88,7 @@ export const updateUser = async (
   if (updates.password) user.password = await hash(updates.password, 10);
   if (updates.email) {
     if (updates.email === user.email.address) {
-      throw new Error("New email cannot be the same address.");
+      throw createHttpError(403, "New email address cannot be same as old.");
     }
 
     const prevEmailId = user.email._id;
